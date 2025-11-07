@@ -206,3 +206,20 @@ body {
 .close-feedback path {
     fill: var(--content-white);
 }
+
+@media (width >=768px) {
+    .add-item-container {
+        flex-direction: row;
+    }
+
+    .add-item-container input {
+        flex: 1;
+    }
+}
+
+@media (width >=1024px) {
+    .container {
+        max-width: 39.125rem;
+        margin: 0 auto;
+    }
+}
