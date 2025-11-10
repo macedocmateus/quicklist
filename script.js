@@ -1,8 +1,11 @@
 const inputItem = document.getElementById('input-item')
 const btnAddItem = document.getElementById('btn-add-item')
 const itemsList = document.getElementById('items-list')
+const deleteFeedback = document.getElementById('delete-feedback')
+const closeFeedback = document.getElementById('close-feedback')
 
 let items = []
+let feedbackTimeout = null
 
 function createItem() {
     const newItem = inputItem.value.trim()
@@ -42,8 +45,34 @@ function renderList() {
 
 function deleteItem(index) {
     items = items.filter((_, item) => item !== index)
-
     renderList()
+    showDeleteFeedback()
+}
+
+function showDeleteFeedback() {
+    if (feedbackTimeout) {
+        clearTimeout(feedbackTimeout)
+    }
+
+    deleteFeedback.classList.remove('hidden')
+
+    // Pequeno delay para permitir que o display mude antes da animação
+    setTimeout(() => {
+        deleteFeedback.classList.add('show')
+    }, 10)
+
+    feedbackTimeout = setTimeout(() => {
+        hideDeleteFeedback()
+    }, 3000)
+}
+
+function hideDeleteFeedback() {
+    deleteFeedback.classList.remove('show')
+
+    // Aguarda a animação terminar antes de ocultar completamente
+    setTimeout(() => {
+        deleteFeedback.classList.add('hidden')
+    }, 400)
 }
 
 btnAddItem.addEventListener('click', createItem)
@@ -60,5 +89,13 @@ itemsList.addEventListener('click', (event) => {
     if (deleteIcon) {
         const index = Number(deleteIcon.dataset.index)
         deleteItem(index)
+    }
+})
+
+closeFeedback.addEventListener('click', () => {
+    hideDeleteFeedback()
+    
+    if (feedbackTimeout) {
+        clearTimeout(feedbackTimeout)
     }
 })

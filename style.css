@@ -195,6 +195,18 @@ body {
     color: var(--content-white);
     border-radius: 0.75rem;
     font: var(--font-label);
+    opacity: 0;
+    transform: translateY(1rem);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.delete-feedback.hidden {
+    display: none;
+}
+
+.delete-feedback.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .alarm-icon path {
