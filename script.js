@@ -4,8 +4,23 @@ const itemsList = document.getElementById('items-list')
 const deleteFeedback = document.getElementById('delete-feedback')
 const closeFeedback = document.getElementById('close-feedback')
 
+const STORAGE_KEY = 'quicklist-items'
+
 let items = []
 let feedbackTimeout = null
+
+function saveToLocalStorage() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
+}
+
+function loadFromLocalStorage() {
+    const savedItems = localStorage.getItem(STORAGE_KEY)
+
+    if (savedItems) {
+        items = JSON.parse(savedItems)
+        renderList()
+    }
+}
 
 function createItem() {
     const newItem = inputItem.value.trim()
@@ -14,9 +29,10 @@ function createItem() {
         return alert('Preencha o campo')
     }
 
-    items = [...items, newItem]
-    
+    items = [...items, { text: newItem, completed: false }]
+
     renderList()
+    saveToLocalStorage()
 
     inputItem.value = ''
     inputItem.focus()
@@ -26,8 +42,8 @@ function renderList() {
     itemsList.innerHTML = items.map((item, index) => {
         return `<div class="task-item">
                         <label>
-                            <input type="checkbox">
-                            ${item}
+                            <input type="checkbox" data-index="${index}" ${item.completed ? 'checked' : ''}>
+                            ${item.text}
                         </label>
                         <svg class="delete-icon" data-index="${index}" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -46,6 +62,7 @@ function renderList() {
 function deleteItem(index) {
     items = items.filter((_, item) => item !== index)
     renderList()
+    saveToLocalStorage()
     showDeleteFeedback()
 }
 
@@ -56,7 +73,6 @@ function showDeleteFeedback() {
 
     deleteFeedback.classList.remove('hidden')
 
-    // Pequeno delay para permitir que o display mude antes da animação
     setTimeout(() => {
         deleteFeedback.classList.add('show')
     }, 10)
@@ -69,10 +85,15 @@ function showDeleteFeedback() {
 function hideDeleteFeedback() {
     deleteFeedback.classList.remove('show')
 
-    // Aguarda a animação terminar antes de ocultar completamente
     setTimeout(() => {
         deleteFeedback.classList.add('hidden')
     }, 400)
+}
+
+function toggleItemComplete(index) {
+    items[index].completed = !items[index].completed
+    renderList()
+    saveToLocalStorage()
 }
 
 btnAddItem.addEventListener('click', createItem)
@@ -85,17 +106,23 @@ inputItem.addEventListener('keypress', (event) => {
 
 itemsList.addEventListener('click', (event) => {
     const deleteIcon = event.target.closest('.delete-icon')
+    const checkbox = event.target.closest('input[type="checkbox"]')
 
     if (deleteIcon) {
         const index = Number(deleteIcon.dataset.index)
         deleteItem(index)
+    } else if (checkbox) {
+        const index = Number(checkbox.dataset.index)
+        toggleItemComplete(index)
     }
 })
 
 closeFeedback.addEventListener('click', () => {
     hideDeleteFeedback()
-    
+
     if (feedbackTimeout) {
         clearTimeout(feedbackTimeout)
     }
 })
+
+loadFromLocalStorage()
