@@ -127,6 +127,15 @@ body {
     scrollbar-color: var(--color-brand) transparent;
 }
 
+.empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 16.25rem;
+    font: var(--font-paragraph);
+    color: var(--content-tertiary);
+}
+
 .task-item {
     display: flex;
     padding: 0.75rem;
