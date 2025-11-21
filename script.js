@@ -79,7 +79,7 @@ function showDeleteFeedback() {
 
     feedbackTimeout = setTimeout(() => {
         hideDeleteFeedback()
-    }, 3000)
+    }, 2000)
 }
 
 function hideDeleteFeedback() {
