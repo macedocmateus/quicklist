@@ -124,6 +124,7 @@ body {
     max-height: 16.25rem;
     overflow-y: auto;
     scroll-behavior: smooth;
+    scrollbar-color: var(--color-brand) transparent;
 }
 
 .task-item {
